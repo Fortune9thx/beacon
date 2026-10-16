@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    background-image:
+      radial-gradient(900px 520px at 8% -6%, rgba(124, 58, 237, 0.28), transparent 60%),
+      radial-gradient(820px 520px at 98% 4%, rgba(217, 70, 239, 0.18), transparent 58%),
+      radial-gradient(760px 640px at 50% 118%, rgba(255, 77, 94, 0.14), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: rgba(217, 70, 239, 0.35);
+  }
+}
+
+@layer components {
+  /* The reference's recurring surface: near-black, thin border, faint lift. */
+  .card {
+    @apply rounded-card border border-white/10 bg-white/[0.03] shadow-card backdrop-blur-xl;
+  }
+  .glass {
+    @apply rounded-card border border-white/10 bg-white/[0.05] shadow-card backdrop-blur-2xl;
+  }
+  .eyebrow {
+    @apply text-[11px] font-bold uppercase tracking-[0.22em] text-brand-deep;
+  }
+  .h-display {
+    @apply font-display text-ink font-bold tracking-[-0.03em] leading-[1.05];
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill px-5 py-3
+           text-[12px] font-bold uppercase tracking-[0.12em] transition
+           disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-primary {
+    @apply btn text-white shadow-glow hover:brightness-110;
+    background-image: linear-gradient(120deg, #7c3aed 0%, #a21caf 55%, #e11d48 100%);
+  }
+  .btn-ember {
+    @apply btn text-white hover:brightness-110;
+    background-image: linear-gradient(120deg, #ff4d5e 0%, #e11d48 100%);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 26px 60px -30px rgba(255, 77, 94, 0.7);
+  }
+  .btn-white {
+    @apply btn bg-ink text-canvas hover:bg-white;
+  }
+  .btn-ghost {
+    @apply btn border border-white/15 bg-white/[0.04] text-ink hover:bg-white/[0.09];
+  }
+  .field {
+    @apply w-full rounded-chip border border-white/10 bg-black/30 px-4 py-3 text-sm
+           text-ink placeholder:text-mute/60 outline-none transition
+           focus:border-brand focus:ring-4 focus:ring-brand/20;
+  }
+  .label {
+    @apply mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-mute;
+  }
+  .hairline {
+    @apply border-t border-white/10;
+  }
+  .num {
+    @apply font-display text-[12px] font-bold tracking-[0.1em] text-mute;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "network": "studio-dev",
+  "chain_id": 61997,
+  "rpc": "https://studio-dev.genlayer.com/api",
+  "explorer": "https://explorer-studio-dev.genlayer.com",
+  "contract": "Beacon",
+  "address": "0x37Df9FD7167bDfAa357eDD3d493C1e8Bca5245a5",
+  "deploy_tx": "0xaad69a2b4b54e9fc8b6400476555128dc3478a700c2caa95d063c000886c458e",
+  "deploy_result": "ACCEPTED",
+  "owner": "0xc6e6d3b2accaececeb40ad4bd3df123ddcb4e537",
+  "treasury": "0xc6e6d3b2accaececeb40ad4bd3df123ddcb4e537",
+  "bundled_file": "contracts/build/Beacon.bundled.py",
+  "bundled_sha256": "c79e3b10bdc5c257c1fc907ddcda43f2cfd3c88232112d321200d1e3746bf2fb",
+  "bundled_bytes": 33985,
+  "methods": 11,
+  "notes": "6 views (get_config, get_policy, get_policy_ids, get_evaluation, get_board, get_fee_claimable) and 5 writes (create_policy, request_evaluation, evaluate, cancel_stale, claim_fees). Deploy requires a nonzero fee deposit on Studio Dev; the working invocation passes a full fee distribution and fee-value 100000000000010352."
+}
