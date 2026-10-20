@@ -7,17 +7,19 @@ is reading a web document and deciding whether it satisfies a written rule.
 ## The one non-deterministic path
 
 `Beacon.evaluate` holds exactly one `gl.eq_principle.strict_eq` call. The
-function it is handed — `judge` — performs every `gl.nondet.web.render` and the
+function it is handed — `judge` — performs every `gl.nondet.web.get` and the
 single `gl.nondet.exec_prompt`. genvm-lint only follows `gl.nondet.*` calls made
 directly inside the function passed to the equivalence principle, so `judge` is
 defined inline rather than factored one hop away.
 
 Inside `judge`, for each pinned URL:
 
-1. `gl.nondet.web.render(url, mode="text")` — fetch, independently, on the
-   leader and on every validator.
-2. `normalize_evidence(url, limit, response)` — pure. SSRF and length rules,
-   and a sha256 fingerprint of the **full** document (not the bounded excerpt).
+1. `gl.nondet.web.get(url)` — fetch, independently, on the leader and on every
+   validator. The response's `status` and `body` are read explicitly; the body
+   may be `bytes`.
+2. `normalize_evidence(url, status, body)` — pure. A non-200 response is marked
+   unreadable. For a 200 response it strips HTML, applies the length rule, and
+   takes a sha256 fingerprint of the **full** document (not the bounded excerpt).
 3. If any document is unreadable, return INCONCLUSIVE at once. The model is not
    consulted.
 4. Otherwise `gl.nondet.exec_prompt(prompt, response_format="json")` and

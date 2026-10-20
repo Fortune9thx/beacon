@@ -1,17 +1,29 @@
 {
-  "network": "studio-dev",
-  "chain_id": 61997,
-  "rpc": "https://studio-dev.genlayer.com/api",
-  "explorer": "https://explorer-studio-dev.genlayer.com",
-  "contract": "Beacon",
-  "address": "0x37Df9FD7167bDfAa357eDD3d493C1e8Bca5245a5",
-  "deploy_tx": "0xaad69a2b4b54e9fc8b6400476555128dc3478a700c2caa95d063c000886c458e",
-  "deploy_result": "ACCEPTED",
-  "owner": "0xc6e6d3b2accaececeb40ad4bd3df123ddcb4e537",
-  "treasury": "0xc6e6d3b2accaececeb40ad4bd3df123ddcb4e537",
-  "bundled_file": "contracts/build/Beacon.bundled.py",
-  "bundled_sha256": "c79e3b10bdc5c257c1fc907ddcda43f2cfd3c88232112d321200d1e3746bf2fb",
-  "bundled_bytes": 33985,
-  "methods": 11,
-  "notes": "6 views (get_config, get_policy, get_policy_ids, get_evaluation, get_board, get_fee_claimable) and 5 writes (create_policy, request_evaluation, evaluate, cancel_stale, claim_fees). Deploy requires a nonzero fee deposit on Studio Dev; the working invocation passes a full fee distribution and fee-value 100000000000010352."
+  "_comment": "An address is recorded here ONLY after gen_getContractSchema (and get_config) confirm it is live. An empty address means not deployed, and the frontend fails closed on it. Every superseded address is kept with the reason it was replaced.",
+  "studio_next": {
+    "chain_id": 61997,
+    "rpc": "https://studio-dev.genlayer.com/api",
+    "explorer": "https://explorer-studio-dev.genlayer.com",
+    "contract": "Beacon",
+    "address": "0x3c9724cb1A3063798cd351C3cF8b748eE0E4834E",
+    "deploy_tx": "0xc10a6f680c3122bd36fb4572d4645aa8f985de139ba8cc41c472ee723f92d27f",
+    "treasury": "0xC6E6d3b2acCaECeCeB40Ad4bD3dF123DDCB4e537",
+    "owner": "0xC6E6d3b2acCaECeCeB40Ad4bD3dF123DDCB4e537",
+    "app": "https://beacon-six-zeta.vercel.app",
+    "bundled_file": "contracts/build/Beacon.bundled.py",
+    "bundled_sha256": "4764cba4d0537672019fa75a97831aad47443bd620b95b30f4236bf236cc7d0e",
+    "bundled_bytes": 34630,
+    "methods": 11,
+    "deployed_at": "2026-10-20T06:06:44.874Z",
+    "verified_live_at": "2026-10-20",
+    "verified_by": "deploy/verify.mjs PASSED: gen_getContractSchema returned 11 methods (6 view, 5 write); get_config returned max_attempts=5, stale_timeout_seconds=86400, max_evidence_urls=5, owner/treasury 0xC6E6...4537; get_policy_ids and get_board are JSON lists; bundle bytes/sha256 match the committed artifact. Live writes: create_policy('uptime-sla', fee 0) and two request_evaluation calls were ACCEPTED; evaluate(e1) twice left e1 PENDING with attempts=2, last_status=INCONCLUSIVE, code=inconclusive and fingerprint 06fe21c5... (tx 0x585029365e54eb04e028777ef5d37334de547b6773de883f7f6acd40876783b7); evaluate(e2), whose only evidence URL returns HTTP 404, left e2 PENDING with attempts=1, last_status=INCONCLUSIVE, code=unreadable_evidence and fingerprint da3c0105... (tx 0xe06cdee0a4107926577ed0fcfeb43b3f706b404f17c79cca87a0eb1eda581494) -- the 404 page was not read as evidence and the model was not consulted. cancel_stale('e999999') was ACCEPTED with leader execution FINISHED_WITH_ERROR (tx 0xa24012cf0d65d6cbde996c0bdb87953b37ddf1f2bd1a81f2bdfa758037f6dbdc), proving the precondition refuses an unknown evaluation.",
+    "superseded": [
+      {
+        "address": "0x37Df9FD7167bDfAa357eDD3d493C1e8Bca5245a5",
+        "tx": "0xaad69a2b4b54e9fc8b6400476555128dc3478a700c2caa95d063c000886c458e",
+        "deployed_at": "2026-10-20 (exact time not recorded)",
+        "reason": "Superseded during the accepted-build audit: _judge now fetches with gl.nondet.web.get and normalizes on the explicit HTTP status, so a non-200 page can never be read as evidence. The previous build called web.render(mode='text') and treated any successful return as HTTP 200."
+      }
+    ]
+  }
 }

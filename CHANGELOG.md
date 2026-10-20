@@ -2,6 +2,26 @@
 
 All notable changes to BEACON. Dates are UTC.
 
+## 0.1.1 â€” 2026-10-20
+
+- **Fixed:** the judge now fetches with `gl.nondet.web.get` and normalizes on the
+  explicit HTTP status instead of treating any rendered text as a 200 response.
+  A 404/500 page can no longer be read as evidence, however compliant its prose
+  looks. Regression: `test_non_200_response_is_not_read_as_evidence`; live
+  proof in `docs/STATUS.md`.
+- **Changed:** the frontend asks `estimateTransactionFeesForWrite` for the exact
+  call and passes the whole fee object, falling back to the proven complete
+  distribution. Reads that a write depends on get bounded retry and a deadline.
+- **Added:** reproducible deploy tooling (`deploy/probe_schema.mjs`,
+  `deploy/verify.mjs`, `deploy/deploy.mjs`, `deploy/smoke.mjs`), a root
+  `package.json`, `gltest.config.yaml`, `run_lint.py`, and `AGENTS.md`.
+- **Added:** `docs/SUBMISSION.md`, `docs/deployment.md`, an expanded
+  `docs/audit.md` with the sibling-build cross-check and residual limitations,
+  and a steward reading order.
+- **Redeployed** to `0x3c9724cb1A3063798cd351C3cF8b748eE0E4834E`; the previous
+  address is recorded with its reason in `deploy/deployments.json`.
+- **Tests:** 105 passing.
+
 ## 0.1.0
 
 Initial release.

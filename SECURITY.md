@@ -13,8 +13,9 @@
 ## Invariants
 
 1. **No status without consensus.** A round that cannot agree writes nothing.
-2. **No COMPLIANT/NON_COMPLIANT without readable evidence.** Unreadable evidence
-   short-circuits to INCONCLUSIVE before the model runs.
+2. **No COMPLIANT/NON_COMPLIANT without readable evidence.** A non-200
+   response, an empty body, or a fetch error is unreadable and short-circuits to
+   INCONCLUSIVE before the model runs.
 3. **No COMPLIANT without a cited source.** A source-less COMPLIANT is
    downgraded.
 4. **Value is conserved.** The contract accepts exactly the policy fee per

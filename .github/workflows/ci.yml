@@ -34,6 +34,24 @@ jobs:
       - name: The committed bundle must match the source it claims to come from
         run: git diff --exit-code -- contracts/build/Beacon.bundled.py
 
+      # The digest recorded for the live deployment must be the digest of the
+      # artifact in the repo. A stale record is a false claim.
+      - name: Deployment record matches the committed bundle
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib
+          doc = json.loads(pathlib.Path("deploy/deployments.json").read_text())
+          net = doc["studio_next"]
+          raw = pathlib.Path(net["bundled_file"]).read_bytes()
+          assert len(raw) == net["bundled_bytes"], "byte count mismatch"
+          assert hashlib.sha256(raw).hexdigest() == net["bundled_sha256"], "sha256 mismatch"
+          print("deployments.json matches the bundle")
+          PY
+
+      - name: Deploy scripts parse
+        run: |
+          for f in deploy/*.mjs; do node --check "$f"; done
+
       # `lint` runs the AST safety checks and needs no SDK download. `check`
       # also validates the schema against the pinned runner tarball, which is
       # not always fetchable from a cold runner -- so `lint` is the gate and

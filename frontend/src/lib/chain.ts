@@ -122,14 +122,44 @@ async function getClient() {
   return clientPromise;
 }
 
+const READ_TIMEOUT_MS = 15_000;
+const READ_ATTEMPTS = 3;
+
+/**
+ * A read that a write decision depends on gets bounded retry and a hard
+ * deadline. A transient RPC hiccup must not surface as "no such policy" and
+ * tempt a caller to retry a request against the wrong fee; a genuinely
+ * definitive chain answer (a JSON-RPC error) still propagates immediately.
+ */
 async function read<T = string>(method: string, args: unknown[] = []): Promise<T> {
   if (!CONTRACT_ADDRESS) throw new Error("contract address is not configured");
   const client = await getClient();
-  return client.readContract({
-    address: CONTRACT_ADDRESS,
-    functionName: method,
-    args,
-  }) as Promise<T>;
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= READ_ATTEMPTS; attempt++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), READ_TIMEOUT_MS);
+    try {
+      const call = client.readContract({
+        address: CONTRACT_ADDRESS,
+        functionName: method,
+        args,
+      }) as Promise<T>;
+      // The SDK does not take an abort signal here, so race the call against a
+      // deadline instead of letting a hung request freeze the page.
+      const deadline = new Promise<never>((_, reject) => {
+        ctrl.signal.addEventListener("abort", () =>
+          reject(new Error(`read ${method}: timed out`)),
+        );
+      });
+      return await Promise.race([call, deadline]);
+    } catch (e) {
+      lastError = e;
+    } finally {
+      clearTimeout(timer);
+    }
+    if (attempt < READ_ATTEMPTS) await new Promise((r) => setTimeout(r, 400 * attempt));
+  }
+  throw lastError instanceof Error ? lastError : new Error(`read ${method}: unreachable`);
 }
 
 /** Contract views return JSON strings; "" means "no such record". */
@@ -263,14 +293,18 @@ export async function currentAccount(): Promise<string | null> {
 /** Poll budget, matching the GenLayer CLI's own receipt default. */
 const POLL_ATTEMPTS = 100;
 const POLL_INTERVAL_MS = 5_000;
-const CONSENSUS_MAX_ROTATIONS = 6;
 
 /**
+ * Fallback fee preset, used only if the per-write simulation fails.
+ *
  * A write on Studio Dev is rejected client-side with `FeeValueMustBeNonZero(1)`
- * unless it carries a complete fee distribution *and* a non-zero deposit; the
- * SDK does not infer one here. This is the distribution a successful deploy on
- * this network uses. The wallet must hold `value + feeValue`; the deposit is
- * mostly returned once the round settles.
+ * unless it carries a complete fee distribution *and* a non-zero deposit. The
+ * SDK can derive that for the exact call via `estimateTransactionFeesForWrite`,
+ * which is preferred below. This object is the complete distribution a
+ * successful deploy and live write on this network used; keeping it as the
+ * fallback means an estimator outage degrades to the proven path rather than
+ * to a write that cannot be submitted. The wallet must hold `value + feeValue`;
+ * the deposit is mostly returned once the round settles.
  */
 const WRITE_FEES = {
   distribution: {
@@ -297,15 +331,41 @@ async function writeClient() {
   return gl.createClient({ chain, endpoint: RPC_URL, account, provider: eth() });
 }
 
+/**
+ * Derive the fee preset from a simulation of this exact call. The estimator
+ * returns a complete `{ distribution, feeValue, policy }` object; passing a
+ * partial one, or only a feeValue, is what produces `FeeValueMustBeNonZero(1)`
+ * before broadcast. When estimation fails, the proven preset is used instead.
+ */
+async function feesForWrite(
+  client: any,
+  method: string,
+  args: unknown[],
+  value: bigint,
+): Promise<unknown> {
+  try {
+    const estimated = await client.estimateTransactionFeesForWrite({
+      address: CONTRACT_ADDRESS,
+      functionName: method,
+      args,
+      value,
+    });
+    if (estimated && estimated.distribution) return estimated;
+  } catch {
+    // Fall through to the proven distribution.
+  }
+  return WRITE_FEES;
+}
+
 export async function write(method: string, args: unknown[], value = 0n): Promise<string> {
   const client = await writeClient();
+  const fees = await feesForWrite(client, method, args, value);
   return client.writeContract({
     address: CONTRACT_ADDRESS,
     functionName: method,
     args,
     value,
-    fees: WRITE_FEES,
-    consensusMaxRotations: CONSENSUS_MAX_ROTATIONS,
+    fees,
   });
 }
 

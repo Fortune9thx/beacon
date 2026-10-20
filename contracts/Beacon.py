@@ -5,7 +5,7 @@ A sponsor freezes a natural-language policy, the evidence hosts it may be judged
 against, and an optional evaluation fee. Any agent then requests an evaluation,
 which freezes the exact evidence URLs for that request. Under the Equivalence
 Principle, validators independently re-fetch those URLs, apply the same
-deterministic SSRF and length rules, fingerprint the full content of every
+deterministic normalization and length rules, fingerprint the full content of every
 document, and re-derive one discrete status:
 
     COMPLIANT | NON_COMPLIANT | INCONCLUSIVE
@@ -484,8 +484,19 @@ class Beacon(gl.contract.Contract):
             all_ok = True
             for u in urls:
                 try:
-                    resp = gl.nondet.web.render(u, mode="text")
-                    ev = normalize_evidence(u, 200, resp)
+                    # Fetch the response object, not rendered text: the status
+                    # must be read explicitly. A 404/500 page can carry prose
+                    # that looks like evidence, so treating every successful
+                    # fetch as HTTP 200 would let an error page decide a
+                    # status. `get` returns `status` and `body` (bytes on this
+                    # SDK); a non-200 response is marked unreadable, which
+                    # short-circuits to INCONCLUSIVE below.
+                    page = gl.nondet.web.get(u)
+                    ev = normalize_evidence(
+                        u,
+                        getattr(page, "status", 0),
+                        getattr(page, "body", b""),
+                    )
                 except Exception:
                     ev = normalize_evidence(u, 0, b"")
                 if not ev["ok"]:

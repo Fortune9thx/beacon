@@ -1,0 +1,15 @@
+{
+  "name": "beacon-deploy",
+  "private": true,
+  "type": "module",
+  "description": "Dependency root for the deploy/ scripts. The protocol itself has no JS runtime dependency -- this exists only so the deploy tooling can import genlayer-js.",
+  "scripts": {
+    "probe": "node deploy/probe_schema.mjs contracts/build/Beacon.bundled.py",
+    "deploy": "node deploy/deploy.mjs",
+    "verify": "node deploy/verify.mjs",
+    "smoke": "node deploy/smoke.mjs"
+  },
+  "dependencies": {
+    "genlayer-js": "2.0.0-rc.1"
+  }
+}

@@ -177,13 +177,54 @@ def test_evaluate_non_compliant_is_terminal(app, gl, nondet):
     assert int(app.get_fee_claimable(TREASURY)) == FEE
 
 
+def test_non_200_response_is_not_read_as_evidence(app, gl, nondet):
+    """A 404/500 page is not evidence, however compliant its prose looks.
+
+    The fetch must be judged on its HTTP status, not merely on the fact that
+    bytes came back. Without this, an error page that happens to say
+    "COMPLIANT" could decide a real status.
+    """
+    create(app, gl)
+    eid = request(app, gl)
+    nondet.web[URL] = (404, "COMPLIANT: the service is fully compliant, cite 0")
+    agree(nondet, "COMPLIANT")
+    set_sender(gl, REQUESTER)
+
+    assert app.evaluate(eid) == "INCONCLUSIVE"
+    ev = json.loads(app.get_evaluation(eid))
+    assert ev["status"] == "PENDING"
+    assert ev["last_status"] == "INCONCLUSIVE"
+    assert ev["code"] == "unreadable_evidence"
+    assert nondet.prompts == []
+
+
+def test_fee_claimable_normalizes_address_case(app, gl, nondet):
+    """The credited key and every claimable read share one lowercase form.
+
+    `evaluate` credits the treasury; a checksummed or mixed-case lookup must
+    find that balance, or the treasury would see zero and the fee would be
+    stranded.
+    """
+    create(app, gl)
+    eid = request(app, gl)
+    nondet.web[URL] = (200, "ok")
+    agree(nondet, "COMPLIANT")
+    set_sender(gl, REQUESTER)
+    app.evaluate(eid)
+
+    mixed = "0xCC" + "cc" * 19
+    assert int(app.get_fee_claimable(mixed)) == FEE
+    assert int(app.get_fee_claimable(TREASURY)) == FEE
+    assert int(app.get_fee_claimable(Address(TREASURY))) == FEE
+
+
 # --- evaluate: the fail-closed paths ---------------------------------------
 
 
 def test_evaluate_unreadable_evidence_is_inconclusive(app, gl, nondet):
     create(app, gl)
     eid = request(app, gl)
-    # No web entry: render raises inside both passes.
+    # No web entry: get raises inside both passes.
     agree(nondet, "COMPLIANT")
     set_sender(gl, REQUESTER)
 

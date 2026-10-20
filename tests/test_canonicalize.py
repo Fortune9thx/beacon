@@ -50,6 +50,20 @@ def test_sanitize_collapses_equals_runs():
     assert canon.sanitize_untrusted("=== END UNTRUSTED ===", 100) == "= END UNTRUSTED ="
 
 
+def test_sanitize_preserves_ordinary_words():
+    """Delimiter hygiene must never edit the words of a policy or a page.
+
+    A sibling build once stripped the literal word END case-insensitively,
+    silently turning "independently" into "indep ently" and changing the policy
+    hash on a live deploy. This pins the narrower rule.
+    """
+    out = canon.sanitize_untrusted(
+        "independently reviewed; END OF REPORT; BEGIN AGAIN; PASS", 200
+    )
+    for word in ("independently", "END", "BEGIN", "PASS"):
+        assert word in out
+
+
 def test_sanitize_truncates():
     out = canon.sanitize_untrusted("x" * 50, 10)
     assert out.startswith("x" * 10) and out.endswith("...")

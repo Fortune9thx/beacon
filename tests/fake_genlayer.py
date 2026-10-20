@@ -11,8 +11,8 @@ behaviours BEACON's safety rests on and nothing more:
   * `strict_eq` runs the judgment function on the leader and again,
     independently, on the validator, and raises when the two disagree -- so a
     consensus failure is exercised rather than assumed.
-  * `web.render` is called once per side, so evidence is re-fetched by each
-    side rather than shared.
+  * `web.get` is called once per side, so evidence is re-fetched by each side
+    rather than shared. (`render` is kept as a compatibility shim.)
   * a web entry may be a queue of responses, consumed one per call, which is
     how a test makes the leader and the validator see different evidence.
 
@@ -71,7 +71,7 @@ class Address:
 class _Message:
     sender_address = Address("0x" + "11" * 20)
     value = 0
-    # Sentinel, live on this exact pin, reads the time from here: gl.block does
+    # A sibling live build on this exact pin reads the time from here: gl.block does
     # not exist and gl.vm.get_timestamp() raises on chain. `.datetime` is the
     # CORD-era spelling; both are provided so either read works.
     datetime = "2023-11-14T22:13:20+00:00"
