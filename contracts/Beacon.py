@@ -382,7 +382,7 @@ class Beacon(gl.contract.Contract):
         # ---------------------------------------------------------------
         # Non-deterministic section. Exactly ONE top-level nondet call
         # (gl.eq_principle.strict_eq) lives in this method -- every
-        # gl.nondet.web.render / gl.nondet.exec_prompt call happens inside
+        # gl.nondet.web.get / gl.nondet.exec_prompt call happens inside
         # `judge`, which the equivalence principle runs once on the leader and
         # again, completely independently, on every validator. The closure
         # touches no self.* storage; it closes only over locals copied above.

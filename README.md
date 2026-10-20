@@ -31,19 +31,21 @@ the fee to the requester in full.
 - **Agreement is on facts, not prose.** Validators must agree on the discrete
   status, the sorted source and clause sets, and the sha256 of every full
   document — never on the wording of a summary.
-- **No consensus means no status.** A round that cannot reach agreement writes
-  nothing and records INCONCLUSIVE.
+- **No agreement means no status.** A diverging round writes nothing: live it is
+  `UNDETERMINED` and the evaluation is untouched. An agreed INCONCLUSIVE round
+  records the attempt and stays pending.
 
 ## Live
 
-- Contract: [`0x3c9724cb1A3063798cd351C3cF8b748eE0E4834E`](https://explorer-studio-dev.genlayer.com/address/0x3c9724cb1A3063798cd351C3cF8b748eE0E4834E)
+- Contract: [`0x9479942AFE108A6fE3AA691224fAf21798f37185`](https://explorer-studio-dev.genlayer.com/address/0x9479942AFE108A6fE3AA691224fAf21798f37185)
   on GenLayer Studio Dev, chain 61997.
 - App: https://beacon-six-zeta.vercel.app
-- Deploy tx: `0xc10a6f680c3122bd36fb4572d4645aa8f985de139ba8cc41c472ee723f92d27f`
+- Deploy tx: `0x67933e326c6fa5cf514e7c88e885f61fe6285151ce6063de0559a82e019d4df7`
   (`ACCEPTED`).
-- Live proof and limits: [docs/STATUS.md](docs/STATUS.md). The 404-evidence
-  evaluation resolved `unreadable_evidence` without consulting the model; a
-  converged status and a nonzero fee have **not** been driven live.
+- Live proof and limits: [docs/STATUS.md](docs/STATUS.md). A 404-evidence
+  evaluation resolved `unreadable_evidence` without consulting the model, a
+  retry converged `NON_COMPLIANT`, and one diverging round wrote nothing. A live
+  `COMPLIANT` and a nonzero fee have **not** been driven.
 
 ## Layout
 

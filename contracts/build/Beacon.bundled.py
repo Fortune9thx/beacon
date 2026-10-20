@@ -24,8 +24,9 @@ import json
 """SSRF-resistant evidence-URL policy.
 
 Every URL that can reach a validator's fetcher is validated here before it is
-frozen into an evaluation, and the same rules are re-applied by every validator
-at fetch time. The policy is deliberately strict: an evidence URL exists to
+frozen into an evaluation. The frozen, validated list is what every validator
+then fetches; this module is not consulted again at fetch time. The policy is
+deliberately strict: an evidence URL exists to
 point at a public, third-party web page, so anything that could aim the fetcher
 at the machine it runs on -- or at a name that resolves there -- is refused
 outright rather than resolved and checked.
@@ -817,7 +818,7 @@ class Beacon(gl.contract.Contract):
         # ---------------------------------------------------------------
         # Non-deterministic section. Exactly ONE top-level nondet call
         # (gl.eq_principle.strict_eq) lives in this method -- every
-        # gl.nondet.web.render / gl.nondet.exec_prompt call happens inside
+        # gl.nondet.web.get / gl.nondet.exec_prompt call happens inside
         # `judge`, which the equivalence principle runs once on the leader and
         # again, completely independently, on every validator. The closure
         # touches no self.* storage; it closes only over locals copied above.

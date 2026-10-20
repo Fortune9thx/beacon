@@ -187,7 +187,7 @@ lowercase. A checksummed key cannot silently read zero and strand a fee;
 | --- | --- | --- |
 | A requester pins favorable evidence within the sponsor's hosts | Host allow-list, full-content fingerprints, sponsor-chosen policy | BEACON does not verify that the page is the "right" page for the subject, or that the policy is good |
 | A single evidence page can decide a status | The model must cite a readable source; a source-less COMPLIANT is downgraded | A one-page policy is allowed by design; requiring two would break legitimate simple policies |
-| Studio Dev's model returns malformed JSON | `_safe_json` fails closed to INCONCLUSIVE; attempts are recorded | Live converged statuses are rare on the preview network; tests cover the converged paths |
+| Studio Dev's model returns malformed JSON | `_safe_json` fails closed to INCONCLUSIVE; attempts are recorded | Malformed output is observed live. A NON_COMPLIANT converged; COMPLIANT remains test-covered only |
 | Studio Dev resets | `deployments.json` + `gen_getContractSchema` liveness; app reports `no-code` | A reset requires a redeploy and a frontend redeploy |
 | No direct GenVM runner tests | In-process fake executes the real contract source and runs `strict_eq` twice | The runner environment itself is not exercised locally; the standard primitive is the gate |
 | Fee movement is not live-proven | Exact-value request, credit-once accounting, zero-before-transfer tests | The CLI cannot attach a payable value, so a nonzero live fee path is untested on chain |

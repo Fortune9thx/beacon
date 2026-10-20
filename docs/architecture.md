@@ -38,10 +38,12 @@ fingerprints       sorted [index, sha256(full document)] pairs
 code               a stable reason code ("" on a clean status)
 ```
 
-Nothing about the prose of the model's answer enters the comparison. If the two
-runs fetch different bytes, their fingerprints differ and `strict_eq` raises;
-`_judge` catches that, and the round becomes INCONCLUSIVE with code
-`no_consensus`. A technical failure never becomes a finding.
+Nothing about the prose of the model's answer enters the comparison. If two runs
+fetch different bytes, their fingerprints differ and `strict_eq` cannot agree.
+On chain that surfaces as an `UNDETERMINED` transaction that writes nothing; the
+contract's caught-exception path (`_FAIL_CLOSED`) records INCONCLUSIVE with code
+`no_consensus` when a raised consensus call is part of an accepted write. A
+technical failure never becomes a finding.
 
 ## Storage
 

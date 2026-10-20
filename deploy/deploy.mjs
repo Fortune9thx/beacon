@@ -128,6 +128,9 @@ net.deployed_at = new Date().toISOString();
 net.bundled_file = "contracts/build/Beacon.bundled.py";
 net.bundled_sha256 = sha256;
 net.bundled_bytes = bundle.length;
+// A fresh deploy invalidates any previous verification claim.
+net.verified_live_at = "";
+net.verified_by = "pending: run node deploy/verify.mjs after deploy";
 writeFileSync(DEPLOYMENTS_PATH, JSON.stringify(doc, null, 2) + "\n");
 console.log(`Wrote ${DEPLOYMENTS_PATH}`);
 console.log("Now run: node deploy/verify.mjs");

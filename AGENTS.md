@@ -70,9 +70,9 @@ npm --prefix frontend run build
 
 ## Known limitations — state these, never paper over them
 
-- **The full happy path is live for reads and pending evaluations, not for a
-  converged COMPLIANT/NON_COMPLIANT or a nonzero payout.** See
-  `docs/STATUS.md`; the test suite covers the converged paths.
+- **The happy path is live through a converged NON_COMPLIANT; a live COMPLIANT
+  and a nonzero fee movement are not.** One live round also ended UNDETERMINED
+  (no state written). See `docs/STATUS.md`; the test suite covers the rest.
 - **There are no direct GenVM tests.** The pinned runner asset is not reliably
   fetchable, so the suite runs against the in-process fake runtime. The
   validator closure is exercised by running `strict_eq` twice; the real gate is

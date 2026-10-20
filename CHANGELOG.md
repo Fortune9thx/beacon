@@ -2,6 +2,26 @@
 
 All notable changes to BEACON. Dates are UTC.
 
+## 0.1.2 — 2026-10-20
+
+- **Redeployed** to `0x9479942AFE108A6fE3AA691224fAf21798f37185` after correcting
+  two internal docstrings/comments that described SSRF rules as re-applied at
+  fetch time. Enforcement is request-time validation plus fetch-time
+  normalization; executable behaviour is unchanged. Superseded addresses and
+  reasons are in `deploy/deployments.json`.
+- **Live:** an evaluation converged to `NON_COMPLIANT` (tx
+  `0xbd238319ec5c9d453c0688c83e1582194ed7313f221d7903ccf3f4396be39f60`); a
+  404-evidence evaluation resolved `unreadable_evidence` with no model
+  consultation (tx
+  `0x43be66c50b8d9456f441cd71e378a7eef902c95d8c5733e1230725c73cc50e65`); a
+  diverging round was `UNDETERMINED` and wrote nothing (tx
+  `0x12ca333c9162f032abde1c5dce728d7292fba55398db750efc8f782123f53cc1`); the
+  refusal smoke check passed (tx
+  `0x7ca7897c6857cc516f040a59381861277a2068ed28878554fa1ba1bd54649ceb`).
+- Bundle 34 674 bytes, sha256
+  `507b11963e867607464f8f0bcee1cc7cb749eafc9f2ebed3bdc5f385786dd642`.
+- **Tests:** 105 passing.
+
 ## 0.1.1 — 2026-10-20
 
 - **Fixed:** the judge now fetches with `gl.nondet.web.get` and normalizes on the
