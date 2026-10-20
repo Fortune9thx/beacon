@@ -13,8 +13,9 @@ _Last updated: 2026-10-20._
   (consensus `ACCEPTED`, `MAJORITY_AGREE`).
 - **Bundle:** `contracts/build/Beacon.bundled.py`, 34 630 bytes, sha256
   `4764cba4d0537672019fa75a97831aad47443bd620b95b30f4236bf236cc7d0e`.
-- **App:** https://beacon-six-zeta.vercel.app. The deployed JS is checked for
-  the address after redeploy; `VITE_CONTRACT_ADDRESS` is inlined at build time.
+- **App:** https://beacon-six-zeta.vercel.app. After the redeploy, the served
+  asset was fetched and checked: it contains the new address and not the
+  superseded one. `VITE_CONTRACT_ADDRESS` is inlined at build time.
 - **Treasury / owner:** `0xC6E6d3b2acCaECeCeB40Ad4bD3dF123DDCB4e537`.
 
 ## Verified
@@ -25,9 +26,9 @@ _Last updated: 2026-10-20._
 | `ruff check .` | All checks passed |
 | `genvm-lint lint contracts/build/Beacon.bundled.py` | PASS (3 checks) |
 | Bundle reproducibility | CI rebuilds and diffs the committed artifact |
-| `node deploy/probe_schema.mjs` | PASS â€” schema + Depends resolve on 61997 |
-| `node deploy/verify.mjs` | PASS â€” 11 methods; constants, owner/treasury, bundle bytes/sha256 |
-| `node deploy/smoke.mjs` | PASS â€” live write refused by its precondition (see below) |
+| `node deploy/probe_schema.mjs` | PASS — schema + Depends resolve on 61997 |
+| `node deploy/verify.mjs` | PASS — 11 methods; constants, owner/treasury, bundle bytes/sha256 |
+| `node deploy/smoke.mjs` | PASS — live write refused by its precondition (see below) |
 | `npm --prefix frontend run typecheck` | PASS |
 | `npm --prefix frontend run build` | PASS (tsc + vite) |
 
@@ -42,23 +43,23 @@ matches the committed artifact.
 
 ### Live writes
 
-- `create_policy("uptime-sla", â€¦)`, fee `0` â€” **ACCEPTED**; `get_policy_ids`
+- `create_policy("uptime-sla", …)`, fee `0` — **ACCEPTED**; `get_policy_ids`
   returns `["uptime-sla"]` and `get_policy` returns the frozen record and
-  `policy_hash` `436bfd85â€¦c7d`.
-- `request_evaluation("uptime-sla", ["https://example.com/"])` â€” **ACCEPTED**;
+  `policy_hash` `436bfd85…c7d`.
+- `request_evaluation("uptime-sla", ["https://example.com/"])` — **ACCEPTED**;
   `e1` freezes the URL, policy hash, requester and fee.
 - `request_evaluation("uptime-sla", ["https://example.com/definitely-not-a-real-page-404"])`
-  â€” **ACCEPTED**; `e2` freezes the 404 URL.
-- `evaluate("e1")` twice â€” **ACCEPTED**; `e1` stays `PENDING` with `attempts=2`,
+  — **ACCEPTED**; `e2` freezes the 404 URL.
+- `evaluate("e1")` twice — **ACCEPTED**; `e1` stays `PENDING` with `attempts=2`,
   `last_status=INCONCLUSIVE`, `code="inconclusive"`, and the full-content
   fingerprint `[[0, "06fe21c5fbf716d5b7fc1ef87cd418a375d9523ad36a951a1e3182a8f42526af"]]`.
   The second round's tx:
   `0x585029365e54eb04e028777ef5d37334de547b6773de883f7f6acd40876783b7`.
-- `evaluate("e2")` â€” **ACCEPTED**; `e2` stays `PENDING` with `attempts=1`,
+- `evaluate("e2")` — **ACCEPTED**; `e2` stays `PENDING` with `attempts=1`,
   `last_status=INCONCLUSIVE`, `code="unreadable_evidence"`, and fingerprint
   `[[0, "da3c01050b1f352b33853bf17e408ba64e0b14423d4f7137a20906ed2e58e679"]]`.
   Tx: `0xe06cdee0a4107926577ed0fcfeb43b3f706b404f17c79cca87a0eb1eda581494`.
-- `cancel_stale("e999999")` â€” **ACCEPTED with `FINISHED_WITH_ERROR`** on the
+- `cancel_stale("e999999")` — **ACCEPTED with `FINISHED_WITH_ERROR`** on the
   leader: the deployed bytecode executed a write and its precondition refused an
   unknown evaluation. Tx:
   `0xa24012cf0d65d6cbde996c0bdb87953b37ddf1f2bd1a81f2bdfa758037f6dbdc`.
@@ -72,7 +73,7 @@ is the S1 fix working on chain: the fetch is judged on its HTTP status, not
 merely on the fact that bytes came back. A 404 page that happens to say
 "COMPLIANT" cannot decide a status.
 
-## NOT verified â€” state this plainly
+## NOT verified — state this plainly
 
 - **No live converged `COMPLIANT` or `NON_COMPLIANT`.** Studio Dev's model
   intermittently returns malformed JSON; both `e1` rounds failed closed. The
@@ -103,13 +104,13 @@ Studio Dev's nondeterministic model intermittently returns malformed JSON, so
 `exec_prompt(..., response_format="json")` yields output that `_safe_json`
 cannot parse; the round then fails closed to `INCONCLUSIVE`, records the
 attempt, and leaves the evaluation `PENDING`. This is a property of the preview
-network, not of the contract â€” and it is the path the fail-closed design covers:
+network, not of the contract — and it is the path the fail-closed design covers:
 a round the model cannot answer cleanly never becomes a status. The remedy is to
 call `evaluate` again; only a round that reaches agreement on a clean record
 changes state.
 
 Studio Dev is a preview network whose state resets. If the schema stops
-resolving, treat BEACON as undeployed until it is redeployed â€” the interface
+resolving, treat BEACON as undeployed until it is redeployed — the interface
 does this on its own.
 
 ## Toolchain

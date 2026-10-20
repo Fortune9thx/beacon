@@ -7,7 +7,7 @@ The Portal packet for BEACON. Every link below was checked live on
 
 | Field | Value |
 |---|---|
-| Project | **BEACON** â€” a frozen-policy status oracle |
+| Project | **BEACON** — a frozen-policy status oracle |
 | GitHub | https://github.com/Fortune9thx/beacon |
 | Live app | https://beacon-six-zeta.vercel.app |
 | Network | GenLayer Studio Dev, chain **61997** |
@@ -20,7 +20,7 @@ The Portal packet for BEACON. Every link below was checked live on
 | Example evaluation | `e1`, evidence `https://example.com/` |
 | Example result | `PENDING`, `attempts=2`, `last_status=INCONCLUSIVE`, `code=inconclusive`, full-content fingerprint recorded |
 | 404 evidence check | `e2`, `code=unreadable_evidence`, no model consultation |
-| Refusal check | `cancel_stale("e999999")` â†’ `FINISHED_WITH_ERROR` (tx `0xa24012cf0d65d6cbde996c0bdb87953b37ddf1f2bd1a81f2bdfa758037f6dbdc`) |
+| Refusal check | `cancel_stale("e999999")` → `FINISHED_WITH_ERROR` (tx `0xa24012cf0d65d6cbde996c0bdb87953b37ddf1f2bd1a81f2bdfa758037f6dbdc`) |
 | Tests | 105 passed; `ruff` clean; `genvm-lint lint` 3/3 |
 | Reproduce | `node deploy/verify.mjs`; `node deploy/probe_schema.mjs contracts/build/Beacon.bundled.py` |
 
@@ -35,7 +35,7 @@ COMPLIANT | NON_COMPLIANT | INCONCLUSIVE
 Validators independently re-fetch the pinned evidence, apply the same
 deterministic SSRF/length rules, fingerprint the **full** document, and re-run
 the same judgment. They agree on the status, the sorted source and clause sets,
-and the fingerprints â€” never on prose. No agreement means no status; the round
+and the fingerprints — never on prose. No agreement means no status; the round
 fails closed to INCONCLUSIVE.
 
 ## What is at stake
@@ -44,7 +44,7 @@ Nothing is paid out on a status. The only value that moves is an optional
 evaluation fee: it is held while an evaluation is pending, credited to the
 fixed treasury when a status converges, and refunded in full to the recorded
 requester if the evaluation never converges. There is no claim, appeal, dispute,
-reimbursement or settlement surface â€” by design, not as a missing feature.
+reimbursement or settlement surface — by design, not as a missing feature.
 
 ## Why it fails closed
 

@@ -22,15 +22,15 @@ the fee to the requester in full.
 
 ## Why it fails closed
 
-- **Unreadable evidence is never compliant.** If any pinned URL cannot be read â€”
-  including a non-200 response â€” the round returns INCONCLUSIVE and the model is
+- **Unreadable evidence is never compliant.** If any pinned URL cannot be read —
+  including a non-200 response — the round returns INCONCLUSIVE and the model is
   not consulted at all. A fetch failure is structurally incapable of producing a
   status.
 - **A status without evidence is never compliant.** If the model returns
   COMPLIANT but cites no source, it is downgraded to INCONCLUSIVE.
 - **Agreement is on facts, not prose.** Validators must agree on the discrete
   status, the sorted source and clause sets, and the sha256 of every full
-  document â€” never on the wording of a summary.
+  document — never on the wording of a summary.
 - **No consensus means no status.** A round that cannot reach agreement writes
   nothing and records INCONCLUSIVE.
 
@@ -58,7 +58,7 @@ contracts/
   build/Beacon.bundled.py  the deployable (Depends line is byte one)
 tests/                   in-process fake GenVM; 105 tests, no network
 deploy/                  deployments.json (live + superseded) + probe/verify/deploy/smoke
-docs/                    STATUS Â· SUBMISSION Â· STEWARD Â· architecture Â· audit Â· deployment
+docs/                    STATUS · SUBMISSION · STEWARD · architecture · audit · deployment
 frontend/                Vite + React + Tailwind, dark
 ```
 
@@ -85,11 +85,11 @@ is [docs/SUBMISSION.md](docs/SUBMISSION.md).
 
 ## Network
 
-Studio Dev only â€” chain id `61997`,
+Studio Dev only — chain id `61997`,
 RPC `https://studio-dev.genlayer.com/api`,
 explorer `https://explorer-studio-dev.genlayer.com`. BEACON refuses to write to
 any other chain.
 
 ## License
 
-MIT â€” see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).

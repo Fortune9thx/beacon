@@ -1,4 +1,4 @@
-# Audit â€” self-review
+# Audit — self-review
 
 Scope: `contracts/Beacon.py` + `contracts/beaconlib/*` (the bundled deployable),
 the deploy tooling, and the frontend's read/write path. Method: source review
@@ -9,7 +9,7 @@ This is a self-audit, not an independent third party.
 
 See [STATUS.md](STATUS.md) for the live-versus-test boundary.
 
-## Value-moving paths â€” traced
+## Value-moving paths — traced
 
 The only value the contract holds is an optional evaluation fee.
 
@@ -26,12 +26,12 @@ The only value the contract holds is an optional evaluation fee.
 5. An `INCONCLUSIVE` round credits nothing, holds the fee, and leaves the
    evaluation `PENDING`; it never pays and never refunds.
 
-Checked: the contract cannot both route and refund one fee â€” `evaluate` makes a
+Checked: the contract cannot both route and refund one fee — `evaluate` makes a
 converged status terminal, `cancel_stale` requires `PENDING`, and `claim_fees`
 reads a balance that is zeroed before its transfer. A zero-fee evaluation has no
 value to move.
 
-## Nondet boundary â€” checked
+## Nondet boundary — checked
 
 `evaluate` holds exactly one `gl.eq_principle.strict_eq` call. The closure it is
 handed (`judge`) performs every fetch and the single `exec_prompt`; it touches no
@@ -107,11 +107,11 @@ the call sees identically.
 
 ## Findings
 
-### S1 â€” a non-200 page could be read as evidence (fixed; redeployed)
+### S1 — a non-200 page could be read as evidence (fixed; redeployed)
 
 **Severity:** correctness. The original `judge` called
 `gl.nondet.web.render(url, mode="text")` and then `normalize_evidence(url, 200,
-response)` â€” a hardcoded 200. Any successful return was treated as a readable
+response)` — a hardcoded 200. Any successful return was treated as a readable
 page. If a host answers a missing path with a 200-styled error document (or the
 renderer does not raise on a non-2xx response), a 404/500 page whose prose says
 "fully compliant" could decide a status. The in-process mock raises on non-200,
@@ -134,7 +134,7 @@ INCONCLUSIVE with `code="unreadable_evidence"` and no prompt).
 The 200-OK page in `e1` did reach the model and recorded a fingerprint. See
 `docs/STATUS.md`.
 
-### S2 â€” the frontend carried a hardcoded fee preset only (fixed)
+### S2 — the frontend carried a hardcoded fee preset only (fixed)
 
 **Severity:** reliability, not security. The contract was never at risk; a write
 carrying a stale or partial distribution is rejected client-side before
@@ -144,7 +144,7 @@ distribution if estimation fails. This is the accepted sibling pattern with a
 belt-and-braces fallback; the deploy and smoke scripts keep the proven
 distribution because they drive the CLI, not the SDK.
 
-### S3 â€” `render` vs `get` and validator independence (verified, not a bug)
+### S3 — `render` vs `get` and validator independence (verified, not a bug)
 
 `strict_eq` is the standard primitive: it runs the closure on the leader and
 again on every validator, so each side fetches and judges independently. The
@@ -153,7 +153,7 @@ fake runtime in the tests does the same two runs and raises on disagreement;
 There is no separate `validator_fn` closure to test (unlike the sibling builds),
 because the equivalence principle owns the comparison.
 
-### S4 â€” address case normalization (verified, not a bug)
+### S4 — address case normalization (verified, not a bug)
 
 `_credit` lowercases its key, `claim_fees` compares and reads the lowercased
 sender, and `get_fee_claimable` normalizes either an `Address` or a string to
@@ -166,7 +166,7 @@ lowercase. A checksummed key cannot silently read zero and strand a fee;
 | --- | --- |
 | `eth_getCode` is not a liveness probe | Uses `gen_getContractSchema` in the app and the scripts |
 | CLI has no 61997 preset | Every CLI call passes `--rpc`; scripts use `studioDevnet` (61997) |
-| Zero/partial fee distribution â†’ `FeeValueMustBeNonZero(1)` | Frontend estimates the whole fee object with a proven fallback; scripts pass the proven complete distribution |
+| Zero/partial fee distribution → `FeeValueMustBeNonZero(1)` | Frontend estimates the whole fee object with a proven fallback; scripts pass the proven complete distribution |
 | Constructor address must be bare/unquoted | `deploy.mjs` spawns with an argv array (no shell) |
 | Generated bundle must be reproducible | CI rebuilds and diffs; bundler asserts Depends-first, no BOM, no dropped imports |
 | gltest plugin blocks collection | `pytest.ini` disables both plugins; `gltest.config.yaml` is present for direct runs |
@@ -181,7 +181,7 @@ lowercase. A checksummed key cannot silently read zero and strand a fee;
 | Single-source verdict | Out of scope for this product: a policy may legitimately rest on one pinned page. Disclosed below. |
 | Evidence identity binding | Out of scope: the sponsor names the hosts, the requester names the page. BEACON proves agreement on content, not topical truth. Disclosed below. |
 
-## Residual limitations â€” accepted, documented
+## Residual limitations — accepted, documented
 
 | Risk | Mitigation | Residual |
 | --- | --- | --- |

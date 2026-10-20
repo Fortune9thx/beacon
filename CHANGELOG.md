@@ -2,7 +2,7 @@
 
 All notable changes to BEACON. Dates are UTC.
 
-## 0.1.1 â€” 2026-10-20
+## 0.1.1 — 2026-10-20
 
 - **Fixed:** the judge now fetches with `gl.nondet.web.get` and normalizes on the
   explicit HTTP status instead of treating any rendered text as a 200 response.

@@ -2,16 +2,16 @@
 
 Frozen-policy status oracle on GenLayer. Read this before changing anything.
 
-## Commit rules â€” not negotiable
+## Commit rules — not negotiable
 
 - Author is **`Fortunex9 <fortuneemx@gmail.com>`**, sole-authored.
-- **No co-author trailer, no AI attribution, no session links** â€” not in commit
+- **No co-author trailer, no AI attribution, no session links** — not in commit
   messages, not in PR bodies, not in docs, not in code comments.
 
 ## Source of truth
 
 - `contracts/Beacon.py` + `contracts/beaconlib/*` are the sources.
-- `contracts/build/Beacon.bundled.py` is **generated** â€” never hand-edit it.
+- `contracts/build/Beacon.bundled.py` is **generated** — never hand-edit it.
   Regenerate with `python contracts/build_bundle.py`.
 - `deploy/deployments.json` is the **only** place the live address lives.
 - The contract has exactly five writes and six views. There is no claim,
@@ -49,7 +49,7 @@ npm --prefix frontend run build
    proven complete distribution; the deploy/smoke scripts pass that same proven
    distribution. Do not pass a bare `feeValue` or a partial distribution.
 4. **Constructor address args must be bare and unquoted.** Drive the CLI's JS
-   entry with an argv array (no shell) â€” see `deploy/deploy.mjs`.
+   entry with an argv array (no shell) — see `deploy/deploy.mjs`.
 5. **Unit tests need `-p no:gltest`** when `genlayer-test` is installed; its
    plugin validates `gltest.config.yaml` and blocks collection.
 6. **`build/` output is generated and LF-only.** CI fails if the committed
@@ -68,7 +68,7 @@ npm --prefix frontend run build
 11. **Sanitizers must attack delimiters, not words.** Remove fence/control
     sequences only; stripping words corrupts frozen policy text and its hash.
 
-## Known limitations â€” state these, never paper over them
+## Known limitations — state these, never paper over them
 
 - **The full happy path is live for reads and pending evaluations, not for a
   converged COMPLIANT/NON_COMPLIANT or a nonzero payout.** See
@@ -87,10 +87,10 @@ npm --prefix frontend run build
 ## Where things are
 
 ```
-contracts/   Beacon.py + beaconlib/ (pure logic) â€” sources of truth
-contracts/build/  Beacon.bundled.py â€” generated, deployed, never hand-edited
+contracts/   Beacon.py + beaconlib/ (pure logic) — sources of truth
+contracts/build/  Beacon.bundled.py — generated, deployed, never hand-edited
 tests/       in-process fake GenVM; 105 tests, no network
-deploy/      deployments.json (live + superseded) Â· probe Â· verify Â· deploy Â· smoke
-docs/        STATUS Â· SUBMISSION Â· STEWARD Â· architecture Â· audit Â· deployment
+deploy/      deployments.json (live + superseded) · probe · verify · deploy · smoke
+docs/        STATUS · SUBMISSION · STEWARD · architecture · audit · deployment
 frontend/    Vite + React + TypeScript, fails closed when the contract is unreachable
 ```
